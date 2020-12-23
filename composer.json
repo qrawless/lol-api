@@ -1,0 +1,26 @@
+{
+    "name": "qrawless/lol",
+    "description": "League of legends PHP API.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "qrawless",
+            "email": "qrawlessserhann@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^5.1.5",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Qrawless\\Lol\\": "src/"
+        }
+    }
+}
