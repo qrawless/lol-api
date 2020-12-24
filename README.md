@@ -103,14 +103,13 @@ print_r($league);  //  Or all data.
 )
 */
 ```
-
-### Summoner mastery:
+### Champion masterys:
 ```php
-//  this fetches the summoner mastery data.
+//  this fetches the summoner league data.
 $mastery = $lol->mastery->bySummoner("6y5LHn5zTYj5XcMtZ3g4UqnE1XXHcOTi_Gy3Vxl4vfZPoN4");
 
-// Get Champion Mastery data
-echo $mastery->{0}->championId;         //  17  ( Teemo <3 )
+// Get Ranked Flex data
+echo $mastery->{0}->championId;         //  17
 echo $mastery->{0}->championLevel;      //  7
 echo $mastery->{0}->championPoints;     //  596085
 echo $mastery->{0}->chestGranted;       //  1

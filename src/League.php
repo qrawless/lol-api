@@ -35,14 +35,14 @@ class League extends Model
      * @param string $id
      * @return string
      */
-    public function bySummoner(string $id)
+    public function bySummoner(string $id): object
     {
         $league = $this->get(Str::Replace($this->api_url.$this->endpoints["leagueBySummoner"], [
             'server'    => $this->options["region"],
             'id'        => $id
         ]), ["api_key"  => $this->api_key]);
         foreach ($league as $key => $value) { $l[$value->queueType] = $value; }
-        return json_decode(json_encode($l, true), false);
+        return (object) json_decode(json_encode($l, true), false);
     }
 
     /**
@@ -51,7 +51,7 @@ class League extends Model
      * @param string $league
      * @return object
      */
-    public function challengerleague(string $league): object
+    public function challengerLeague(string $league): object
     {
         return (object) $this->get(Str::Replace($this->api_url.$this->endpoints["leagueChallengerLeagues"], [
             'server'    => $this->options["region"],
