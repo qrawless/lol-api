@@ -116,11 +116,17 @@ class Lol
         return false;
     }
 
+    /**
+     * @return mixed
+     */
     public function getServer()
     {
         return $this->options["region"];
     }
 
+    /**
+     * Curl close.
+     */
     public function close()
     {
         foreach ($this->models as $model) {
