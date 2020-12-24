@@ -51,7 +51,7 @@ class League extends Model
      * @param string $league
      * @return object
      */
-    public function challangerLeague(string $league): object
+    public function challengerleague(string $league): object
     {
         return (object) $this->get(Str::Replace($this->api_url.$this->endpoints["leagueChallengerLeagues"], [
             'server'    => $this->options["region"],
