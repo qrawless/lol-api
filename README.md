@@ -45,7 +45,7 @@ print_r($summoner);  //  Or all data.
 )
 */
 ```
-###League:
+### League:
 ```php
 //  this fetches the summoner league data.
 $league = $lol->league->bySummoner("6y5LHn5zTYj5XcMtZ3g4UqnE1XXHcOTi_Gy3Vxl4vfZPoN4");
