@@ -12,10 +12,12 @@ Initializing the library
 require_once __DIR__.'/vendor/autoload.php';
 
 $lol = new \Qrawless\Lol\Lol([
-    "api_key"   => "API_KEY",
-    "region"    => "REGION_KEY", // tr, euw, kr.. and so on
-    "curl"      => [ "verify" => false /* Disable SSL verify (optional) */ ]
+    "api_key"   => "API_KEY",    // Riot api key (required*)
+    "region"    => "REGION_KEY", // TURKEY, EUROPE_WEST, EUROPE_EAST.. (*optional. default: EUROPE_WEST)
+    "language"  => "tr_TR",      // tr_TR, en_US, ...and so on.. (optional. default: en_US)
+    "curl"      => [ "verify" => false /* Disable SSL verify (optional. default: true) */ ]
 ]);
+
 ```
 Usage example
 -------------
@@ -103,16 +105,18 @@ print_r($league);  //  Or all data.
 )
 */
 ```
-### Champion masterys:
+### Champion mastery:
 ```php
 //  this fetches the summoner league data.
 $mastery = $lol->mastery->bySummoner("6y5LHn5zTYj5XcMtZ3g4UqnE1XXHcOTi_Gy3Vxl4vfZPoN4");
 
-// Get Ranked Flex data
 echo $mastery->{0}->championId;         //  17
 echo $mastery->{0}->championLevel;      //  7
 echo $mastery->{0}->championPoints;     //  596085
 echo $mastery->{0}->chestGranted;       //  1
+
+// basic usage DataDragon API.
+$lol->DDragon->getChampionById($mastery->{0}->championId); // Get champion data.
 
 print_r($mastery);  //  Or all data.
 /* stdClass Object

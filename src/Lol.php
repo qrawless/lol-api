@@ -4,11 +4,22 @@
 
 namespace Qrawless\Lol;
 
+use Exception;
+use Qrawless\Lol\Models\Summoner;
+use Qrawless\Lol\Models\League;
+use Qrawless\Lol\Models\Mastery;
+use Qrawless\Lol\Models\CommunityDragon;
+use Qrawless\Lol\Models\DDragon;
+use Qrawless\Lol\Traits\Model;
+
 /**
  * Class Lol
- * @method $models
- * @method $summoner
- * @method $options
+ *
+ * @property Summoner $summoner
+ * @property Mastery $mastery
+ * @property League $league
+ * @property DDragon $dDragon
+ * @property CommunityDragon $communityDragon
  * @package Qrawless\Lol
  */
 class Lol
@@ -19,23 +30,72 @@ class Lol
     private array $models;
 
     /**
-     * @var array $servers
+     * @var array|string[] $servers
      */
-    private array $servers;
+    private array $servers = [
+        "NORTH_AMERICA"   => "na1",
+        "EUROPE_WEST"     => "euw1",
+        "EUROPE_EAST"     => "eun1",
+        "LAMERICA_SOUTH"  => "la2",
+        "LAMERICA_NORTH"  => "la1",
+        "BRASIL"          => "br1",
+        "RUSSIA"          => "ru",
+        "TURKEY"          => "tr1",
+        "OCEANIA"         => "oc1",
+        "KOREA"           => "kr",
+        "JAPAN"           => "jp1",
+        "AMERICAS"        => "americas",
+        "EUROPE"          => "europe",
+        "ASIA"            => "asia"
+    ];
+
+    /**
+     * @var array|string[] $regions
+     */
+    private array $regions = [
+        "NORTH_AMERICA"   => "na",
+        "EUROPE_WEST"     => "euw",
+        "EUROPE_EAST"     => "eune",
+        "LAMERICA_SOUTH"  => "las",
+        "LAMERICA_NORTH"  => "lan",
+        "BRASIL"          => "br",
+        "RUSSIA"          => "ru",
+        "TURKEY"          => "tr",
+        "OCEANIA"         => "oce",
+        "KOREA"           => "kr",
+        "JAPAN"           => "jp",
+        "AMERICAS"        => "americas",
+        "EUROPE"          => "europe",
+        "ASIA"            => "asia"
+    ];
 
     /**
      * @var array
      */
     private array $options = [
         'api_key'   => null,
-        'region'    => null,
-        'curl'      => []
+        'region'    => EUROPE_WEST,
+        'language'  => "en_US",
+        'curl'      => [],
+        'servers'   => null,
+        'regions'   => null,
+        'cache' => [
+            "DDragon"   => [
+                "versions"          => 3600,
+                "languages"         => 3600,
+                "champions"         => 3600,
+                "summoner"          => 300,
+                "mastery"           => 300,
+                "league"            => 300,
+                "challengerLeague"  => 3600,
+            ]
+        ]
     ];
 
     /**
      * Lol constructor.
      * @param array $options
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(array $options)
     {
@@ -43,35 +103,22 @@ class Lol
             $this->options[$key] = $value;
         }
 
-
-        $this->servers = [
-            "br"      => "br1",
-            "eune"    => "eun1",
-            "euw"     => "euw1",
-            "jp"      => "jp1",
-            "kr"      => "kr",
-            "lan"     => "la1",
-            "las"     => "la2",
-            "na"      => "na1",
-            "oce"     => "oc1",
-            "tr"      => "tr1",
-            "ru"      => "ru"
-        ];
-
-        if (!$this->servers($this->options["region"])) throw new \Exception("Region not found");
-
-        $this->options["region"] = $this->servers($this->options["region"]);
+        $this->options['servers'] = $this->servers;
+        $this->options['regions'] = $this->regions;
 
         $this->models = [
-            'summoner'  => new Summoner($this->options),
-            'league'    => new League($this->options),
-            'mastery'   => new Mastery($this->options),
+            'model'             => new Model($this->options),
+            'summoner'          => new Summoner($this->options),
+            'league'            => new League($this->options),
+            'mastery'           => new Mastery($this->options),
+            'communityDragon'   => new CommunityDragon($this->options),
+            'DDragon'           => new DDragon($this->options),
         ];
     }
 
     /**
      * @param $name
-     * @return mixed|string
+     * @return mixed
      */
     public function __get($name)
     {
@@ -88,49 +135,31 @@ class Lol
     }
 
     /**
-     * @param string|null $server
-     * @return array|mixed|string|string[]
-     */
-    public function servers(?string $server = null)
-    {
-        if ($server === null) return $this->servers;
-        else if(array_key_exists($server, $this->servers)) return $this->servers[$server];
-        else return false;
-    }
-
-    /**
-     * Set api region.
-     *
-     * @param string|null $server
+     * @param $name
      * @return bool
      */
-    public function setServer(?string $server = null): bool
+    public function __isset($name): bool
     {
-        if($this->servers($server)){
-            $this->options["region"]    = $this->servers[$server];
-            $this->summoner->options    = $this->options;
-            $this->mastery->options     = $this->options;
-            $this->league->options      = $this->options;
-            return true;
-        }
-        return false;
+        return isset($this->options[$name]);
     }
 
     /**
-     * @return mixed
+     * @return Lol
      */
-    public function getServer()
-    {
-        return $this->options["region"];
-    }
-
-    /**
-     * Curl close.
-     */
-    public function close()
+    public function close(): Lol
     {
         foreach ($this->models as $model) {
             curl_close($model->curl);
         }
+        return $this;
+    }
+
+    /**
+     * @param $timestamp
+     * @return false|string
+     */
+    public function timestamp($timestamp)
+    {
+        return date('Y-m-d H:i:s', $timestamp / 1000);
     }
 }
