@@ -6,6 +6,7 @@ namespace Qrawless\Lol\Traits;
 
 
 use CurlHandle;
+use phpDocumentor\Reflection\Types\False_;
 
 /**
  * Class Model
@@ -98,5 +99,45 @@ class Model
         $info = curl_getinfo($curl);
         if($info["http_code"] === 200) return (object) $data;
         else if ($info["http_code"] === 429) sleep(3); goto retry;
+    }
+
+    /**
+     * Soo experimental.... xd
+     *
+     * @param array $urls
+     * @return array|false
+     */
+    public function multiGet(array $urls)
+    {
+        if (empty($urls)) return false;
+        $nodes = [];
+        foreach ($urls as $url){
+            $urll = sprintf("%s?%s", $url[0], http_build_query($url[1]));
+            array_push($nodes, $urll);
+        }
+
+        $node_count = count($nodes);
+
+        $curl_arr = array();
+        $master = curl_multi_init();
+
+        for($i = 0; $i < $node_count; $i++)
+        {
+            $url =$nodes[$i];
+            $curl_arr[$i] = curl_init($url);
+            curl_setopt($curl_arr[$i], CURLOPT_RETURNTRANSFER, true);
+            curl_multi_add_handle($master, $curl_arr[$i]);
+        }
+
+        do {
+            curl_multi_exec($master,$running);
+        } while($running > 0);
+
+
+        for($i = 0; $i < $node_count; $i++)
+        {
+            $results[] = curl_multi_getcontent($curl_arr[$i]);
+        }
+        return $results;
     }
 }
