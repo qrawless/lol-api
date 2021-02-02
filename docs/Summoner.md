@@ -26,3 +26,27 @@ print_r($summoner);  //  Or all data.
 )
 */
 ```
+### Search for username on all servers.
+```php
+//  this fetches the summoner data.
+$summoner = $lol->summoner->checkAllServers("QRÁWLÈSS");
+
+print_r($summoner);  //  Or all data.
+
+/*
+Array
+(
+    [na1] => {...}
+    [euw1] => {...}
+    [eun1] => {...}
+    [la2] => {...}
+    [la1] => {...}
+    [br1] => {...}
+    [ru] => {...}
+    [tr1] => {"id":"...","accountId":"...","name":"QRÁWLÈSS","profileIconId":787,"summonerLevel":173}
+    [oc1] => {...}
+    [kr] => {...}
+    [jp1] => {...}
+)
+*/
+```
