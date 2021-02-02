@@ -14,6 +14,11 @@ class DDragon extends Model
     use Cache;
 
     /**
+     * @var array
+     */
+    public array $options = [];
+
+    /**
      * @var object|Psr16Adapter
      */
     public object $cache;

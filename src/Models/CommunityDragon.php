@@ -5,10 +5,13 @@ namespace Qrawless\Lol\Models;
 
 
 use Qrawless\Lol\Helpers\Str;
+use Qrawless\Lol\Traits\Cache;
 use Qrawless\Lol\Traits\Model;
 
 class CommunityDragon extends Model
 {
+    use Cache;
+
     /**
      * @var array
      */

@@ -36,11 +36,36 @@ class Summoner extends Model
     }
 
     /**
-     * Get Summoner by Name.
+     * Search for username on all servers.
      *
      * @param string $summonerName
      * @return object
      */
+    public function checkAllServers(string $summonerName): object
+    {
+        $data = [];
+        $summonerName = str_replace(' ', '+', $summonerName);
+//
+        foreach ($this->options["servers"] as $server => $serverCode) {
+            if ($serverCode == "americas" || $serverCode == "asia" || $serverCode == "europe") continue;
+
+            $data[$serverCode] = array(Str::Replace($this->api_url.$this->endpoints["summonerByName"], [
+                'server'    => $serverCode,
+                'summoner'  => $summonerName
+            ]), ["api_key"  => $this->api_key]);
+        }
+        $data = $this->multiGet($data);
+        $dataA = [];
+        $c = 0;
+        foreach ($this->options["servers"] as $server => $serverCode) {
+            if (empty($data[$c])) continue;
+            $dataA[$serverCode] = $data[$c];
+            $c++;
+        }
+        print_r($dataA);
+    }
+
+
     public function byName(string $summonerName): object
     {
         $summonerName = str_replace(' ', '+', $summonerName);
