@@ -64,7 +64,6 @@ class Model
                 curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, 0);
             }
         }
-
     }
 
     /**
@@ -81,7 +80,6 @@ class Model
      * @param string $url
      * @param array $options
      * @return object
-     * @throws \JsonException
      */
     public function get(string $url, array $options = []): object
     {
@@ -96,7 +94,7 @@ class Model
         curl_setopt($curl, CURLOPT_HEADER, 0);
 
         retry:
-        $data = json_decode(curl_exec($curl), false, 512, JSON_THROW_ON_ERROR);
+        $data = json_decode(curl_exec($curl), false);
         $info = curl_getinfo($curl);
         if($info["http_code"] === 200) return (object) $data;
         else if ($info["http_code"] === 429) sleep(3); goto retry;

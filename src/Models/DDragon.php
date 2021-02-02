@@ -21,11 +21,6 @@ class DDragon extends Model
     /**
      * @var string
      */
-    public string $default_lang = "en_US";
-
-    /**
-     * @var string
-     */
     public string $version;
 
     /**
@@ -38,7 +33,6 @@ class DDragon extends Model
         $this->options = $options;
 
         $this->version = $this->getVersion()->latest;
-
     }
 
     /**
@@ -75,12 +69,12 @@ class DDragon extends Model
      */
     public function getChampions(): object
     {
-        if ($this->initialize()->has("champions")) return $this->initialize()->get("champions");
+        if ($this->initialize()->has("champions_".$this->options["language"])) return $this->initialize()->get("champions_".$this->options["language"]);
         $data = $this->get(Str::Replace("http://DDragon.leagueoflegends.com/cdn/:version/data/:language/champion.json", [
             'version'    => $this->version,
-            'language'  => $this->default_lang
+            'language'  => $this->options["language"]
         ]));
-        $this->initialize()->set("champions", json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["champions"]);
+        $this->initialize()->set("champions_".$this->options["language"], json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["champions"]);
         return (object) json_decode(json_encode($data));
     }
 
@@ -92,8 +86,8 @@ class DDragon extends Model
      */
     public function getChampionById(int $championId)
     {
-        if ($this->initialize()->has("champions")) {
-            foreach ($this->initialize()->get("champions")->data as $champion => $data) {
+        if ($this->initialize()->has("champions_".$this->options["language"])) {
+            foreach ($this->initialize()->get("champions_".$this->options["language"])->data as $champion => $data) {
                 if ($data->key == $championId) return $data;
             }
             return false;
@@ -109,12 +103,71 @@ class DDragon extends Model
      */
     public function getChampionByKey(string $championKey)
     {
-        if ($this->initialize()->has("champions")) {
-            foreach ($this->initialize()->get("champions")->data as $champion => $data) {
+        if ($this->initialize()->has("champions_".$this->options["language"])) {
+            foreach ($this->initialize()->get("champions_".$this->options["language"])->data as $champion => $data) {
                 if (strtolower($data->id) == strtolower($championKey)) return $data;
             }
             return false;
         }
         else return $this->getChampions();
+    }
+
+    /**
+     * @param int $iconId
+     * @return string
+     */
+    public function profileIcon(int $iconId): string
+    {
+        return (string) Str::Replace("http://ddragon.leagueoflegends.com/cdn/10.25.1/img/profileicon/:icon.png", [
+            'version'   => $this->version,
+            'language'  => $this->options["language"],
+            'icon'      => $iconId
+        ]);
+    }
+
+
+    /**
+     * @return object
+     */
+    public function getSummoners(): object
+    {
+        if ($this->initialize()->has("summoner_".$this->options["language"])) return $this->initialize()->get("summoner_".$this->options["language"]);
+        $data = $this->get(Str::Replace("http://ddragon.leagueoflegends.com/cdn/:version/data/:language/summoner.json", [
+            'version'    => $this->version,
+            'language'  => $this->options["language"]
+        ]));
+        $this->initialize()->set("summoner_".$this->options["language"], json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["summoners"]);
+        return (object) json_decode(json_encode($data));
+    }
+
+    /**
+     * @param int $summonerKey
+     * @return object
+     */
+    public function getSummonerByKey(int $summonerKey): object
+    {
+        if ($this->initialize()->has("summoner_".$this->options["language"])) {
+            foreach ($this->initialize()->get("summoner_".$this->options["language"])->data as $summoner_key => $summoner) {
+                if (strtolower($summoner->key) == strtolower($summonerKey)) return $summoner;
+            }
+        }
+        else return $this->getSummoners();
+    }
+    public function getSummonerById(string $summonerId): object
+    {
+        if ($this->initialize()->has("summoner_".$this->options["language"])) {
+            foreach ($this->initialize()->get("summoner_".$this->options["language"])->data as $summoner_key => $summoner) {
+                if (strtolower($summoner->id) == strtolower($summonerId)) return $summoner;
+            }
+        }
+        else return $this->getSummoners();
+    }
+    public function summonerIconByKey(int $summonerKey): string
+    {
+        return (string) Str::Replace("http://ddragon.leagueoflegends.com/cdn/10.25.1/img/spell/:icon", [
+            'version'   => $this->version,
+            'language'  => $this->options["language"],
+            'icon'      => $this->getSummonerByKey($summonerKey)->image->full
+        ]);
     }
 }

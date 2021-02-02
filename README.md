@@ -1,10 +1,21 @@
-# lol
-a simple Lol API.
+<h1 style="display: inline-flex;line-height: 4rem">
+<img style="display: inline-flex;border-radius: 500px; margin-right: 10px;" src="http://ddragon.leagueoflegends.com/cdn/10.25.1/img/profileicon/787.png" width="65">
+MESELA..
+</h1>
+
+## Documentation
+* [Summoner API](./docs/Summoner.md)
+* [League API](./docs/League.md)
+* [Masterys API](./docs/Masterys.md)
+  
+
+* [DataDragon API](./docs/DDragon.md)
+
 
 install
 ------------------------
 ```
-composer require qrawless/lol-api
+composer require qrawless/lol-api (coming soon)
 ```
 Initializing the library
 ------------------------
@@ -13,127 +24,8 @@ require_once __DIR__.'/vendor/autoload.php';
 
 $lol = new \Qrawless\Lol\Lol([
     "api_key"   => "API_KEY",    // Riot api key (required*)
-    "region"    => "REGION_KEY", // TURKEY, EUROPE_WEST, EUROPE_EAST.. (*optional. default: EUROPE_WEST)
-    "language"  => "tr_TR",      // tr_TR, en_US, ...and so on.. (optional. default: en_US)
-    "curl"      => [ "verify" => false /* Disable SSL verify (optional. default: true) */ ]
+    "region"    => "REGION_KEY", // TURKEY, EUROPE_WEST, EUROPE_EAST..  (default: EUROPE_WEST)
+    "language"  => "tr_TR",      // tr_TR, en_US, ...                   (default: en_US)
+    "curl"      => [ "verify" => false /* Disable SSL verify            (default: true) */ ]
 ]);
-
-```
-Usage example
--------------
-
-```php
-//  ...initialization...
-
-//  this fetches the summoner data.
-$summoner = $lol->summoner->byName("TT ØRÁWLÈSS");
-
-echo $summoner->id;             //  6y5LHn5zTYj5XcMt...
-echo $summoner->puuid;          //  rEakbi8xJ7sQ92v8...
-echo $summoner->name;           //  TT ØRÁWLÈSS
-echo $summoner->summonerLevel;  //  166
-
-print_r($summoner);  //  Or all data.
-
-/* stdClass Object
-(
-    [id] => 6y5LHn5zTYj5XcMtZ3g4UqnE1XXHcOTi_Gy3Vxl4vfZPoN4
-    [accountId] => fDO7GzXa-BWWJLlQFk39PdC6fevQnIgwnZMvfVNlJ-TnUNU
-    [puuid] => rEakbi8xJ7sQ92v8drW2L5Oyi94fy9Mxnd3QHlPbkcQsOsGrb7h_zObRybzYx0TwdaVoIt9wmKG6Zg
-    [name] => TT ØRÁWLÈSS
-    [profileIconId] => 787
-    [revisionDate] => 1608321937000
-    [summonerLevel] => 166
-)
-*/
-```
-### League:
-```php
-//  this fetches the summoner league data.
-$league = $lol->league->bySummoner("6y5LHn5zTYj5XcMtZ3g4UqnE1XXHcOTi_Gy3Vxl4vfZPoN4");
-
-// Get Ranked Flex data
-echo $league->RANKED_FLEX_SR->tier;             //  BRONZE
-echo $league->RANKED_FLEX_SR->rank;             //  II
-echo $league->RANKED_FLEX_SR->leaguePoints;     //  64
-echo $league->RANKED_FLEX_SR->wins;             //  20
-echo $league->RANKED_FLEX_SR->losses;           //  18
-
-// Get Ranked Solo data
-echo $league->RANKED_SOLO_5x5->tier;            //  SILVER
-echo $league->RANKED_SOLO_5x5->rank;            //  II
-echo $league->RANKED_SOLO_5x5->leaguePoints;    //  15
-echo $league->RANKED_SOLO_5x5->wins;            //  102
-echo $league->RANKED_SOLO_5x5->losses;          //  99
-
-print_r($league);  //  Or all data.
-
-/* stdClass Object
-(
-    [RANKED_SOLO_5x5] => stdClass Object
-        (
-            [leagueId] => 6de0cdfc-3acc-41bd-a692-d15ed22aa502
-            [queueType] => RANKED_SOLO_5x5
-            [tier] => SILVER
-            [rank] => II
-            [summonerId] => 6y5LHn5zTYj5XcMtZ3g4UqnE1XXHcOTi_Gy3Vxl4vfZPoN4
-            [summonerName] => TT ØRÁWLÈSS
-            [leaguePoints] => 15
-            [wins] => 102
-            [losses] => 99
-            [veteran] => 
-            [inactive] => 
-            [freshBlood] => 
-            [hotStreak] => 
-        )
-    [RANKED_FLEX_SR] => stdClass Object
-        (
-            [leagueId] => e131e04d-0c33-4d66-8184-437cb14b3273
-            [queueType] => RANKED_FLEX_SR
-            [tier] => BRONZE
-            [rank] => II
-            [summonerId] => 6y5LHn5zTYj5XcMtZ3g4UqnE1XXHcOTi_Gy3Vxl4vfZPoN4
-            [summonerName] => TT ØRÁWLÈSS
-            [leaguePoints] => 64
-            [wins] => 20
-            [losses] => 18
-            [veteran] => 
-            [inactive] => 
-            [freshBlood] => 
-            [hotStreak] => 
-        )
-)
-*/
-```
-### Champion mastery:
-```php
-//  this fetches the summoner league data.
-$mastery = $lol->mastery->bySummoner("6y5LHn5zTYj5XcMtZ3g4UqnE1XXHcOTi_Gy3Vxl4vfZPoN4");
-
-echo $mastery->{0}->championId;         //  17
-echo $mastery->{0}->championLevel;      //  7
-echo $mastery->{0}->championPoints;     //  596085
-echo $mastery->{0}->chestGranted;       //  1
-
-// basic usage DataDragon API.
-$lol->DDragon->getChampionById($mastery->{0}->championId); // Get champion data.
-
-print_r($mastery);  //  Or all data.
-/* stdClass Object
-(
-    [0] => stdClass Object
-        (
-            [championId] => 17
-            [championLevel] => 7
-            [championPoints] => 596085
-            [lastPlayTime] => 1608752530000
-            [championPointsSinceLastLevel] => 574485
-            [championPointsUntilNextLevel] => 0
-            [chestGranted] => 1
-            [tokensEarned] => 0
-            [summonerId] => 6y5LHn5zTYj5XcMtZ3g4UqnE1XXHcOTi_Gy3Vxl4vfZPoN4
-        )
-    [...]
-)
-*/
 ```

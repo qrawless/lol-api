@@ -84,6 +84,7 @@ class Lol
                 "versions"          => 3600,
                 "languages"         => 3600,
                 "champions"         => 3600,
+                "summoners"         => 3600,
                 "summoner"          => 300,
                 "mastery"           => 300,
                 "league"            => 300,
@@ -112,7 +113,7 @@ class Lol
             'league'            => new League($this->options),
             'mastery'           => new Mastery($this->options),
             'communityDragon'   => new CommunityDragon($this->options),
-            'DDragon'           => new DDragon($this->options),
+            'dDragon'           => new DDragon($this->options),
         ];
     }
 
