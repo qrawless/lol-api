@@ -74,7 +74,7 @@ class Lol
      */
     private array $options = [
         'api_key'   => null,
-        'region'    => EUROPE_WEST,
+        'region'    => "EUROPE_WEST",
         'language'  => "en_US",
         'curl'      => [],
         'servers'   => null,
