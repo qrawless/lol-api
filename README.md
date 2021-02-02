@@ -1,7 +1,4 @@
-<h1 style="display: inline-flex;line-height: 4rem">
-<img style="display: inline-flex;border-radius: 500px; margin-right: 10px;" src="http://ddragon.leagueoflegends.com/cdn/10.25.1/img/profileicon/787.png" width="65">
-MESELA..
-</h1>
+# QRAWLESS / LOL-API
 
 ## Documentation
 * [Summoner API](./docs/Summoner.md)
