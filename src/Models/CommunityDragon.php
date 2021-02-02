@@ -10,6 +10,11 @@ use Qrawless\Lol\Traits\Model;
 class CommunityDragon extends Model
 {
     /**
+     * @var array
+     */
+    public array $options = [];
+
+    /**
      * @var string
      */
     protected string $dragon_url = "https://cdn.communitydragon.org/:version";
