@@ -30,7 +30,7 @@ print_r($league);  //  Or all data.
             [tier] => BRONZE
             [rank] => I
             [summonerId] => 6y5LHn5zTYj5XcMtZ3g4UqnE1XXHcOTi_Gy3Vxl4vfZPoN4
-            [summonerName] => TT ØRÁWLÈSS
+            [summonerName] => QRÁWLÈSS
             [leaguePoints] => 100
             [wins] => 30
             [losses] => 23
@@ -55,7 +55,7 @@ print_r($league);  //  Or all data.
             [tier] => SILVER
             [rank] => II
             [summonerId] => 6y5LHn5zTYj5XcMtZ3g4UqnE1XXHcOTi_Gy3Vxl4vfZPoN4
-            [summonerName] => TT ØRÁWLÈSS
+            [summonerName] => QRÁWLÈSS
             [leaguePoints] => 15
             [wins] => 102
             [losses] => 99
