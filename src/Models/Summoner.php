@@ -69,12 +69,12 @@ class Summoner extends Model
     public function byName(string $summonerName): object
     {
         $summonerName = str_replace(' ', '+', $summonerName);
-        if ($this->initialize()->has("summoner_".base64_encode($summonerName))) return $this->initialize()->get("summoner_".base64_encode($summonerName));
+        if ($this->initialize()->has($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($summonerName))) return $this->initialize()->get($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($summonerName));
         $data = $this->get(Str::Replace($this->api_url.$this->endpoints["summonerByName"], [
             'server'    => $this->options["servers"][$this->options["region"]],
             'summoner'  => $summonerName
         ]), ["api_key"  => $this->api_key]);
-        $this->initialize()->set("summoner_".base64_encode($summonerName), json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["summoner"]);
+        $this->initialize()->set($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($summonerName), json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["summoner"]);
         return (object) json_decode(json_encode($data));
     }
 
@@ -86,12 +86,12 @@ class Summoner extends Model
      */
     public function byId(string $id): object
     {
-        if ($this->initialize()->has("summoner_".base64_encode($id))) return $this->initialize()->get("summoner_".base64_encode($id));
+        if ($this->initialize()->has($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($id))) return $this->initialize()->get($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($id));
         $data = $this->get(Str::Replace($this->api_url.$this->endpoints["summonerById"], [
             'server'    => $this->options["servers"][$this->options["region"]],
             'id'        => $id
         ]), ["api_key"  => $this->api_key]);
-        $this->initialize()->set("summoner_".base64_encode($id), json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["summoner"]);
+        $this->initialize()->set($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($id), json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["summoner"]);
         return (object) json_decode(json_encode($data));
     }
 
@@ -103,12 +103,12 @@ class Summoner extends Model
      */
     public function byAccountId(string $accountId): object
     {
-        if ($this->initialize()->has("summoner_".base64_encode($accountId))) return $this->initialize()->get("summoner_".base64_encode($accountId));
+        if ($this->initialize()->has($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($accountId))) return $this->initialize()->get($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($accountId));
         $data = $this->get(Str::Replace($this->api_url.$this->endpoints["summonerByAccountId"], [
             'server'    => $this->options["servers"][$this->options["region"]],
             'accountId' => $accountId
         ]), ["api_key"  => $this->api_key]);
-        $this->initialize()->set("summoner_".base64_encode($accountId), json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["summoner"]);
+        $this->initialize()->set($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($accountId), json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["summoner"]);
         return (object) json_decode(json_encode($data));
     }
 
@@ -120,12 +120,12 @@ class Summoner extends Model
      */
     public function byPuuid(string $puuid): object
     {
-        if ($this->initialize()->has("summoner_".base64_encode($puuid))) return $this->initialize()->get("summoner_".base64_encode($puuid));
+        if ($this->initialize()->has($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($puuid))) return $this->initialize()->get($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($puuid));
         $data = $this->get(Str::Replace($this->api_url.$this->endpoints["summonerByPuuid"], [
             'server'    => $this->options["servers"][$this->options["region"]],
             'puuid'     => $puuid
         ]), ["api_key"  => $this->api_key]);
-        $this->initialize()->set("summoner_".base64_encode($puuid), json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["summoner"]);
+        $this->initialize()->set($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($puuid), json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["summoner"]);
         return (object) json_decode(json_encode($data));
     }
 }
