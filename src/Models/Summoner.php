@@ -39,9 +39,9 @@ class Summoner extends Model
      * Search for username on all servers.
      *
      * @param string $summonerName
-     * @return object
+     * @return array
      */
-    public function checkAllServers(string $summonerName): object
+    public function checkAllServers(string $summonerName): array
     {
         $data = [];
         $summonerName = str_replace(' ', '+', $summonerName);
