@@ -4,6 +4,13 @@
 $summoner   = $lol->summoner->byName("QRÁWLÈSS");
 
 $matchList  = $lol->matchList->accountId($summoner->accountId);
+// or optional filter
+$matchList  = $lol->matchList->accountId($summoner->accountId, [
+    "champion"  => 17,   // Teemo <3
+    "queue"     => 420,  // 5v5 Ranked Solo games
+    "queue"     => 440,  // 5v5 Ranked Flex games
+    "season"    => 13,   // Season id
+]);
 
 print_r($summoner);
 /* stdClass Object
