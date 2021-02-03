@@ -4,7 +4,7 @@
 * [Summoner API](./docs/Summoner.md)
 * [League API](./docs/League.md)
 * [Masterys API](./docs/Masterys.md)
-* [Masterys API](./docs/MatchList.md)
+* [MatchList API](./docs/MatchList.md)
   
 
 * [DataDragon API](./docs/DDragon.md)
