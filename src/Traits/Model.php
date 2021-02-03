@@ -39,6 +39,8 @@ class Model
         "leagueChallengerLeagues"   => "/lol/league/v4/challengerleagues/by-queue/:league",
         // Mastery
         "masteryBySummoner"         => "/lol/champion-mastery/v4/champion-masteries/by-summoner/:id",
+        // Matchlist
+        "matchLists"                => "/lol/match/v4/matchlists/by-account/:accountId",
     ];
 
     /**
