@@ -5,6 +5,7 @@
 namespace Qrawless\Lol;
 
 use Exception;
+use Qrawless\Lol\Models\MatchList;
 use Qrawless\Lol\Models\Summoner;
 use Qrawless\Lol\Models\League;
 use Qrawless\Lol\Models\Mastery;
@@ -19,6 +20,7 @@ use Qrawless\Lol\Traits\Model;
  * @property Mastery $mastery
  * @property League $league
  * @property DDragon $dDragon
+ * @property MatchList $matchList
  * @property CommunityDragon $communityDragon
  * @package Qrawless\Lol
  */
@@ -86,6 +88,7 @@ class Lol
                 "champions"         => 3600,
                 "summoners"         => 3600,
                 "summoner"          => 300,
+                "matchList"         => 300,
                 "mastery"           => 300,
                 "league"            => 300,
                 "challengerLeague"  => 3600,
@@ -110,6 +113,7 @@ class Lol
         $this->models = [
             'model'             => new Model($this->options),
             'summoner'          => new Summoner($this->options),
+            'matchList'         => new MatchList($this->options),
             'league'            => new League($this->options),
             'mastery'           => new Mastery($this->options),
             'communityDragon'   => new CommunityDragon($this->options),
