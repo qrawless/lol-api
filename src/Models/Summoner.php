@@ -62,7 +62,7 @@ class Summoner extends Model
             $dataA[$serverCode] = $data[$c];
             $c++;
         }
-        print_r($dataA);
+        return $dataA;
     }
 
 
