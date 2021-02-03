@@ -46,8 +46,11 @@ class League extends Model
             'id'        => $id
         ]), ["api_key"  => $this->api_key]);
         foreach ($data as $key => $value) { $l[$value->queueType] = $value; }
-        $this->initialize()->set("league_".base64_encode($id), json_decode(json_encode($l, true), false), $this->options["cache"]["DDragon"]["league"]);
-        return (object) json_decode(json_encode($l, true), false);
+        if (!empty($l)){
+            $this->initialize()->set("league_".base64_encode($id), json_decode(json_encode($l, true), false), $this->options["cache"]["DDragon"]["league"]);
+            return (object) json_decode(json_encode($l, true), false);
+        }
+        return (object) json_decode(json_encode($data, true), false);
     }
 
     /**
