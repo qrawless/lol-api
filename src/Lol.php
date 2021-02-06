@@ -136,7 +136,17 @@ class Lol
      */
     public function __set($name, $value)
     {
+        $this->models = [];
         $this->options[$name] = $value;
+        $this->models = [
+            'model'             => new Model($this->options),
+            'summoner'          => new Summoner($this->options),
+            'matchList'         => new MatchList($this->options),
+            'league'            => new League($this->options),
+            'mastery'           => new Mastery($this->options),
+            'communityDragon'   => new CommunityDragon($this->options),
+            'dDragon'           => new DDragon($this->options),
+        ];
     }
 
     /**
