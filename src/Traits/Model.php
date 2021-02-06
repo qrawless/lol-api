@@ -96,11 +96,11 @@ class Model
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_HEADER, 0);
 
-        retry:
         $data = json_decode(curl_exec($curl), false);
         $info = curl_getinfo($curl);
         if($info["http_code"] === 200) return (object) $data;
-        else if ($info["http_code"] === 429) sleep(3); goto retry;
+        else if ($info["http_code"] === 429) die("rate limit exceeded");
+        else return (object) $data;
     }
 
     /**
