@@ -91,7 +91,7 @@ class Lol
                 "matchList"         => 300,
                 "mastery"           => 300,
                 "league"            => 300,
-                "challengerLeague"  => 3600,
+                "challengerLeague"  => 300,
             ]
         ]
     ];
@@ -167,6 +167,34 @@ class Lol
             curl_close($model->curl);
         }
         return $this;
+    }
+
+    /**
+     * @param $summonerId
+     * @param $accountId
+     * @return mixed
+     */
+    public function getProfile($summonerId, $accountId)
+    {
+        $summoner   = $this->summoner->byId($summonerId, true);
+        $league     = $this->league->bySummoner($summonerId, true);
+        $matchList  = $this->matchList->accountId($accountId, null, true);
+
+        $data = $this->models["model"]->multiGet([
+            [$summoner, ["api_key"  => $this->models["model"]->api_key]],
+            [$league, ["api_key"    => $this->models["model"]->api_key]],
+            [$matchList, ["api_key" => $this->models["model"]->api_key]]
+        ]);
+
+        foreach ($data[1] as $key => $value) { $l[$value->queueType] = $value; }
+
+        $summoner = $data[0];
+        $summoner->revisionDate = $this->timestamp($summoner->revisionDate);
+        $summoner->League       = $l;
+        $summoner->Lanes        = $this->models["matchList"]->Lanes($data[2]->matches);
+        $summoner->totalGames   = $data[2]->totalGames;
+
+        return $summoner;
     }
 
     /**
