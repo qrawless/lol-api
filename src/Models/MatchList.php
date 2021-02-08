@@ -36,16 +36,16 @@ class MatchList extends Model
     /**
      * @param string $accountId
      * @param array|null $options
-     * @return mixed|object|null
+     * @param false $url
+     * @return mixed|string|null
      */
-    public function accountId(string $accountId, array $options = null): object
+    public function accountId(string $accountId, array $options = null, $url = false)
     {
+        $str = Str::Replace($this->api_url.$this->endpoints["matchLists"], ['server' => $this->options["servers"][$this->options["region"]], 'accountId' => $accountId]);
+        if ($url === true) return $str;
         if ($this->initialize()->has("matchlist_".base64_encode($accountId))) return $this->initialize()->get("matchlist_".base64_encode($accountId));
         $options["api_key"] = $this->api_key;
-        $data = $this->get(Str::Replace($this->api_url.$this->endpoints["matchLists"], [
-            'server'    => $this->options["servers"][$this->options["region"]],
-            'accountId' => $accountId
-        ]), $options);
+        $data = $this->get($str, $options);
         $this->initialize()->set("matchlist_".base64_encode($accountId), json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["matchList"]);
         return json_decode(json_encode($data));
     }
