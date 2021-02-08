@@ -6,7 +6,6 @@ namespace Qrawless\Lol\Traits;
 
 
 use CurlHandle;
-use phpDocumentor\Reflection\Types\False_;
 
 /**
  * Class Model
