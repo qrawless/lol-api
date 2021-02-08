@@ -65,7 +65,10 @@ class Summoner extends Model
         return $dataA;
     }
 
-
+    /**
+     * @param string $summonerName
+     * @return object
+     */
     public function byName(string $summonerName): object
     {
         $summonerName = str_replace(' ', '+', $summonerName);
@@ -82,15 +85,15 @@ class Summoner extends Model
      * Get Summoner by Id.
      *
      * @param string $id
-     * @return object
+     * @param false $url
+     * @return mixed|object|string|null
      */
-    public function byId(string $id): object
+    public function byId(string $id, $url=false)
     {
+        $str = Str::Replace($this->api_url.$this->endpoints["summonerById"], ['server' => $this->options["servers"][$this->options["region"]], 'id' => $id]);
+        if ($url === true) return $str;
         if ($this->initialize()->has($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($id))) return $this->initialize()->get($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($id));
-        $data = $this->get(Str::Replace($this->api_url.$this->endpoints["summonerById"], [
-            'server'    => $this->options["servers"][$this->options["region"]],
-            'id'        => $id
-        ]), ["api_key"  => $this->api_key]);
+        $data = $this->get($str, ["api_key"  => $this->api_key]);
         $this->initialize()->set($this->options["servers"][$this->options["region"]]."summoner_".base64_encode($id), json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["summoner"]);
         return (object) json_decode(json_encode($data));
     }
