@@ -36,15 +36,14 @@ class League extends Model
      * Get league entries in all queues for a given summoner ID.
      *
      * @param string $id
-     * @return object
+     * @return string
      */
-    public function bySummoner(string $id): object
+    public function bySummoner(string $id, $url=false)
     {
+        $str = Str::Replace($this->api_url.$this->endpoints["leagueBySummoner"], ['server' => $this->options["servers"][$this->options["region"]], 'id' => $id]);
+        if ($url === true) return $str;
         if ($this->initialize()->has("league_".base64_encode($id))) return $this->initialize()->get("league_".base64_encode($id));
-        $data = $this->get(Str::Replace($this->api_url.$this->endpoints["leagueBySummoner"], [
-            'server'    => $this->options["servers"][$this->options["region"]],
-            'id'        => $id
-        ]), ["api_key"  => $this->api_key]);
+        $data = $this->get($str, ["api_key"  => $this->api_key]);
         foreach ($data as $key => $value) { $l[$value->queueType] = $value; }
         if (!empty($l)){
             $this->initialize()->set("league_".base64_encode($id), json_decode(json_encode($l, true), false), $this->options["cache"]["DDragon"]["league"]);
