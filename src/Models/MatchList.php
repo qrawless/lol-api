@@ -42,7 +42,7 @@ class MatchList extends Model
     public function accountId(string $accountId, array $options = null, $url = false)
     {
         $str = Str::Replace($this->api_url.$this->endpoints["matchLists"], ['server' => $this->options["servers"][$this->options["region"]], 'accountId' => $accountId]);
-        if ($url === true) return $str;
+        if ($url === true) if (empty($options)) { return $str; } else { return sprintf("%s?%s", $str, http_build_query($options)); }
         if ($this->initialize()->has("matchlist_".base64_encode($accountId))) return $this->initialize()->get("matchlist_".base64_encode($accountId));
         $options["api_key"] = $this->api_key;
         $data = $this->get($str, $options);
