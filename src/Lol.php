@@ -91,7 +91,7 @@ class Lol
                 "matchList"         => 300,
                 "mastery"           => 300,
                 "league"            => 300,
-                "challengerLeague"  => 300,
+                "challengerLeague"  => 3600,
             ]
         ]
     ];
@@ -178,12 +178,17 @@ class Lol
     {
         $summoner   = $this->summoner->byId($summonerId, true);
         $league     = $this->league->bySummoner($summonerId, true);
-        $matchList  = $this->matchList->accountId($accountId, null, true);
+        $matchList  = $this->matchList->accountId($accountId, [
+            "queue" => 440,
+            "queue" => 420
+        ], true);
+        $masterys   = $this->mastery->bySummoner($summonerId, true);
 
         $data = $this->models["model"]->multiGet([
             [$summoner, ["api_key"  => $this->models["model"]->api_key]],
             [$league, ["api_key"    => $this->models["model"]->api_key]],
-            [$matchList, ["api_key" => $this->models["model"]->api_key]]
+            [$matchList, ["api_key" => $this->models["model"]->api_key]],
+            [$masterys, ["api_key"  => $this->models["model"]->api_key]]
         ]);
 
         foreach ($data[1] as $key => $value) { $l[$value->queueType] = $value; }
@@ -193,6 +198,12 @@ class Lol
         $summoner->League       = $l;
         $summoner->Lanes        = $this->models["matchList"]->Lanes($data[2]->matches);
         $summoner->totalGames   = $data[2]->totalGames;
+
+        foreach ($data[3] as $c => $datum) {
+            if ($c >= 3) break; $mast[$c] = $datum;
+            foreach ($this->models["dDragon"]->getChampions()->data as $id){ if ($id->key == $datum->championId){ $mast[$c]->name = $id->name; } }
+        }
+        $summoner->Masterys   = $mast;
 
         return $summoner;
     }

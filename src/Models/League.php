@@ -42,11 +42,11 @@ class League extends Model
     {
         $str = Str::Replace($this->api_url.$this->endpoints["leagueBySummoner"], ['server' => $this->options["servers"][$this->options["region"]], 'id' => $id]);
         if ($url === true) return $str;
-        if ($this->initialize()->has("league_".base64_encode($id))) return $this->initialize()->get("league_".base64_encode($id));
+        if ($this->initialize()->has($this->options["servers"][$this->options["region"]]."league_".base64_encode($id))) return $this->initialize()->get($this->options["servers"][$this->options["region"]]."league_".base64_encode($id));
         $data = $this->get($str, ["api_key"  => $this->api_key]);
         foreach ($data as $key => $value) { $l[$value->queueType] = $value; }
         if (!empty($l)){
-            $this->initialize()->set("league_".base64_encode($id), json_decode(json_encode($l, true), false), $this->options["cache"]["DDragon"]["league"]);
+            $this->initialize()->set($this->options["servers"][$this->options["region"]]."league_".base64_encode($id), json_decode(json_encode($l, true), false), $this->options["cache"]["DDragon"]["league"]);
             return (object) json_decode(json_encode($l, true), false);
         }
         return (object) json_decode(json_encode($data, true), false);
@@ -60,12 +60,12 @@ class League extends Model
      */
     public function challengerLeague(string $league): object
     {
-        if ($this->initialize()->has("challengerLeague")) return $this->initialize()->get("challengerLeague");
+        if ($this->initialize()->has($this->options["servers"][$this->options["region"]]."challengerLeague")) return $this->initialize()->get($this->options["servers"][$this->options["region"]]."challengerLeague");
         $data = $this->get(Str::Replace($this->api_url.$this->endpoints["leagueChallengerLeagues"], [
             'server'    => $this->options["servers"][$this->options["region"]],
             'league'    => $league
         ]), ["api_key"  => $this->api_key]);
-        $this->initialize()->set("challengerLeague", json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["challengerLeague"]);
+        $this->initialize()->set($this->options["servers"][$this->options["region"]]."challengerLeague", json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["challengerLeague"]);
         return (object) json_decode(json_encode($data));
     }
 }

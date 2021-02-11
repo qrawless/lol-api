@@ -43,10 +43,10 @@ class MatchList extends Model
     {
         $str = Str::Replace($this->api_url.$this->endpoints["matchLists"], ['server' => $this->options["servers"][$this->options["region"]], 'accountId' => $accountId]);
         if ($url === true) if (empty($options)) { return $str; } else { return sprintf("%s?%s", $str, http_build_query($options)); }
-        if ($this->initialize()->has("matchlist_".base64_encode($accountId))) return $this->initialize()->get("matchlist_".base64_encode($accountId));
+        if ($this->initialize()->has($this->options["servers"][$this->options["region"]]."matchlist_".base64_encode($accountId))) return $this->initialize()->get($this->options["servers"][$this->options["region"]]."matchlist_".base64_encode($accountId));
         $options["api_key"] = $this->api_key;
         $data = $this->get($str, $options);
-        $this->initialize()->set("matchlist_".base64_encode($accountId), json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["matchList"]);
+        $this->initialize()->set($this->options["servers"][$this->options["region"]]."matchlist_".base64_encode($accountId), json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["matchList"]);
         return json_decode(json_encode($data));
     }
 
@@ -62,7 +62,7 @@ class MatchList extends Model
             "TOP"       => 0,
             "JUNGLE"    => 0,
             "MID"       => 0,
-            "BOTTOM"    => 0,
+            "ADC"       => 0,
             "SUPPORT"   => 0,
         ];
         foreach ($matchList as $match) {
@@ -70,7 +70,7 @@ class MatchList extends Model
             if ($match->lane === "MID") $Lanes["MID"]++;
             if ($match->lane === "JUNGLE") $Lanes["JUNGLE"]++;
             if ($match->lane === "BOTTOM") {
-                if ($match->role === "DUO_SUPPORT") { $Lanes["SUPPORT"]++; } else { $Lanes["BOTTOM"]++; }
+                if ($match->role === "DUO_SUPPORT") { $Lanes["SUPPORT"]++; } else { $Lanes["ADC"]++; }
             }
         }
 
