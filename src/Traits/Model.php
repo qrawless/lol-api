@@ -6,6 +6,7 @@ namespace Qrawless\Lol\Traits;
 
 
 use CurlHandle;
+use phpDocumentor\Reflection\Types\False_;
 
 /**
  * Class Model
@@ -113,9 +114,16 @@ class Model
         if (empty($urls)) return false;
         $nodes = [];
         foreach ($urls as $url){
-            $urll = sprintf("%s?%s", $url[0], http_build_query($url[1]));
+            if (preg_match_all('/(\?)/', $url[0])){
+                $urll = sprintf("%s&%s", $url[0], http_build_query($url[1]));
+            } else {
+                $urll = sprintf("%s?%s", $url[0], http_build_query($url[1]));
+            }
             array_push($nodes, $urll);
         }
+
+//        print_r($nodes);
+//        die();
 
         $node_count = count($nodes);
 
