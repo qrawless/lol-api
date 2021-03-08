@@ -42,11 +42,11 @@ class MatchList extends Model
     public function accountId(string $accountId, array $options = null, $url = false)
     {
         $str = Str::Replace($this->api_url.$this->endpoints["matchLists"], ['server' => $this->options["servers"][$this->options["region"]], 'accountId' => $accountId]);
-        if ($url === true) if (empty($options)) { return $str; } else { return sprintf("%s?%s", $str, http_build_query($options)); }
-        if ($this->initialize()->has($this->options["servers"][$this->options["region"]]."matchlist_".base64_encode($accountId))) return $this->initialize()->get($this->options["servers"][$this->options["region"]]."matchlist_".base64_encode($accountId));
+        if ($url === true) { if (empty($options)) { return $str; } else { return sprintf("%s?%s", $str, http_build_query($options)); }}
+        if ($this->initialize()->has($this->options["servers"][$this->options["region"]]."_".base64_encode(json_encode($options))."_matchlist_".base64_encode($accountId))) return $this->initialize()->get($this->options["servers"][$this->options["region"]]."_".base64_encode(json_encode($options))."_matchlist_".base64_encode($accountId));
         $options["api_key"] = $this->api_key;
         $data = $this->get($str, $options);
-        $this->initialize()->set($this->options["servers"][$this->options["region"]]."matchlist_".base64_encode($accountId), json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["matchList"]);
+        $this->initialize()->set($this->options["servers"][$this->options["region"]]."_".base64_encode(json_encode($options))."_matchlist_".base64_encode($accountId), json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["matchList"]);
         return json_decode(json_encode($data));
     }
 
