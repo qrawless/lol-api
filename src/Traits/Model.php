@@ -82,9 +82,9 @@ class Model
     /**
      * @param string $url
      * @param array $options
-     * @return object
+     * @return int|mixed
      */
-    public function get(string $url, array $options = []): object
+    public function get(string $url, array $options = [])
     {
         $curl = $this->curl;
 
@@ -99,8 +99,8 @@ class Model
         retry:
         $data = json_decode(curl_exec($curl), false);
         $info = curl_getinfo($curl);
-        if($info["http_code"] === 200) return (object) $data;
-        else if ($info["http_code"] === 429) sleep(3); goto retry;
+        if ($info["http_code"] === 429) return $info["http_code"];
+        else return $data;
     }
 
     /**
