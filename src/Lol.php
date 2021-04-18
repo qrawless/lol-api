@@ -5,6 +5,7 @@
 namespace Qrawless\Lol;
 
 use Exception;
+use mysql_xdevapi\Collection;
 use Qrawless\Lol\Models\MatchList;
 use Qrawless\Lol\Models\Summoner;
 use Qrawless\Lol\Models\League;
@@ -89,6 +90,7 @@ class Lol
                 "summoners"         => 3600,
                 "summoner"          => 300,
                 "matchList"         => 300,
+                "match"             => 604800,
                 "mastery"           => 300,
                 "league"            => 300,
                 "challengerLeague"  => 3600,
@@ -179,8 +181,7 @@ class Lol
         $summoner   = $this->summoner->byId($summonerId, true);
         $league     = $this->league->bySummoner($summonerId, true);
         $matchList  = $this->matchList->accountId($accountId, [
-            "queue" => 440,
-            "queue" => 420
+            "queue" => ["450","400", "440", "420", "700"]
         ], true);
         $masterys   = $this->mastery->bySummoner($summonerId, true);
 
@@ -193,17 +194,94 @@ class Lol
 
         foreach ($data[1] as $key => $value) { $l[$value->queueType] = $value; }
 
+
         $summoner = $data[0];
         $summoner->revisionDate = $this->timestamp($summoner->revisionDate);
+        $summoner->stats        = null;
         $summoner->League       = $l;
-        $summoner->Lanes        = $this->models["matchList"]->Lanes($data[2]->matches);
+        $summoner->Lanes        = $this->matchList->Lanes($data[2]->matches);
         $summoner->totalGames   = $data[2]->totalGames;
 
-        foreach ($data[3] as $c => $datum) {
-            if ($c >= 3) break; $mast[$c] = $datum;
-            foreach ($this->models["dDragon"]->getChampions()->data as $id){ if ($id->key == $datum->championId){ $mast[$c]->name = $id->name; } }
+
+        if (empty($data[2]->status->status_code)){
+            $games   = $this->matchList->matchURLGen($data[2]->matches);
+            $kills   = 0;
+            $assists = 0;
+            $deaths  = 0;
+            $win     = 0;
+
+            if (count($games) === 100) {
+                $page2 = $this->matchList->matchURLGen($this->matchList->accountId($accountId, ["beginIndex" => 100, "queue" => ["450","400", "440", "420", "700"]])->matches);
+            }
+
+//            die();
+            if ($games){
+//                $champions = [];
+                $totalGames = count($games);
+                foreach ($games as $game) {
+                    foreach ($game->participants as $participants) {
+//                        dd([$participants->summonerId, $summoner->id]);
+                        if ($summoner->id === $participants->summonerId){
+
+                            $kills   += $participants->stats->kills;
+                            $deaths  += $participants->stats->deaths;
+                            $assists += $participants->stats->assists;
+
+                            $win     += $participants->stats->win;
+
+//                            if(count($champions) > 2) continue;
+//
+//                            if ($champions[$participants->championId]) $champions[$participants->championId]["match"] += 1;
+//                            else $champions[$participants->championId]["match"] = 1;
+//
+//                            $champions[$participants->championId]["kills"] += $participants->stats->kills;
+//                            $champions[$participants->championId]["deaths"] += $participants->stats->deaths;
+//                            $champions[$participants->championId]["assists"] += $participants->stats->assists;
+                        }
+                    }
+                }
+
+                if ($page2){
+                    $totalGames += count($page2);
+                    foreach ($page2 as $game) {
+                        foreach ($game->participants as $participants) {
+                            if ($summoner->id === $participants->summonerId){
+
+                                $kills   += $participants->stats->kills;
+                                $deaths  += $participants->stats->deaths;
+                                $assists += $participants->stats->assists;
+
+                                $win     += $participants->stats->win;
+
+                            }
+                        }
+                    }
+                }
+
+
+                $kda = round(($kills+$assists) / $deaths,2);
+                if ($totalGames === 200) $summoner->stats["match"] = "+".$totalGames;
+                else $summoner->stats["match"] = $totalGames;
+                $summoner->stats["winRate"]    = round(($win / $totalGames) * 100,2);
+                $summoner->stats["kda"]        = $kda;
+//                $summoner->stats["champions"]  = $champions;
+            }
         }
-        $summoner->Masterys   = $mast;
+
+
+        if(!empty($data[3])){
+            $allchamps = $this->dDragon->getChampions()->data;
+
+            foreach ($data[3] as $c => $datum) {
+                if ($c >= 3) break; $mast[$c] = $datum;
+                foreach ($allchamps as $id){
+                    if ($id->key == $datum->championId){
+                        $mast[$c]->name = $id->name;
+                    }
+                }
+            }
+            $summoner->Masterys   = $mast;
+        }
 
         return $summoner;
     }
