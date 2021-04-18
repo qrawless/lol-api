@@ -5,7 +5,6 @@
 namespace Qrawless\Lol;
 
 use Exception;
-use mysql_xdevapi\Collection;
 use Qrawless\Lol\Models\MatchList;
 use Qrawless\Lol\Models\Summoner;
 use Qrawless\Lol\Models\League;

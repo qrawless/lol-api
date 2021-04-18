@@ -40,6 +40,7 @@ class Model
         "masteryBySummoner"         => "/lol/champion-mastery/v4/champion-masteries/by-summoner/:id",
         // Matchlist
         "matchLists"                => "/lol/match/v4/matchlists/by-account/:accountId",
+        "match"                     => "/lol/match/v4/matches/:matchId",
     ];
 
     /**
@@ -88,6 +89,7 @@ class Model
         $curl = $this->curl;
 
         if (isset($options)) $url = sprintf("%s?%s", $url, http_build_query($options));
+        foreach ($options["queue"] as $key => $option) { $url = str_replace("%5B$key%5D","", $url); }
 
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -95,10 +97,8 @@ class Model
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_HEADER, 0);
 
-//        retry:
         $data = json_decode(curl_exec($curl), false);
-//        $info = curl_getinfo($curl);
-//        if ($info["http_code"] === 429) return $info["http_code"];
+
         return $data;
     }
 
