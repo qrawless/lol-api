@@ -85,6 +85,7 @@ class Lol
             "DDragon"   => [
                 "versions"          => 3600,
                 "languages"         => 3600,
+                "items"             => 3600,
                 "champions"         => 3600,
                 "summoners"         => 3600,
                 "summoner"          => 300,
@@ -180,7 +181,7 @@ class Lol
         $summoner   = $this->summoner->byId($summonerId, true);
         $league     = $this->league->bySummoner($summonerId, true);
         $matchList  = $this->matchList->accountId($accountId, [
-            "queue" => ["450","400", "440", "420", "700"]
+            "queue" => ["450", "400", "440", "420", "700", "1020", "900"]
         ], true);
         $masterys   = $this->mastery->bySummoner($summonerId, true);
 
@@ -210,7 +211,7 @@ class Lol
             $win     = 0;
 
             if (count($games) === 100) {
-                $page2 = $this->matchList->matchURLGen($this->matchList->accountId($accountId, ["beginIndex" => 100, "queue" => ["450","400", "440", "420", "700"]])->matches);
+                $page2 = $this->matchList->matchURLGen($this->matchList->accountId($accountId, ["beginIndex" => 100, "queue" => ["450","400", "440", "420", "700", "1020", "900"]])->matches);
             }
 
 //            die();
