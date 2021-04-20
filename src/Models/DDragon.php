@@ -158,6 +158,12 @@ class DDragon extends Model
         }
         else return $this->getSummoners();
     }
+
+    /**
+     * @param string $summonerId
+     * @return object
+     * @throws \ReflectionException
+     */
     public function getSummonerById(string $summonerId): object
     {
         if ($this->initialize()->has("summoner_".$this->options["language"])) {
@@ -167,12 +173,73 @@ class DDragon extends Model
         }
         else return $this->getSummoners();
     }
+
+    /**
+     * @param int $summonerKey
+     * @return string
+     */
     public function summonerIconByKey(int $summonerKey): string
     {
-        return (string) Str::Replace("http://ddragon.leagueoflegends.com/cdn/10.25.1/img/spell/:icon", [
+        return (string) Str::Replace("http://ddragon.leagueoflegends.com/cdn/:version/img/spell/:icon", [
             'version'   => $this->version,
-            'language'  => $this->options["language"],
             'icon'      => $this->getSummonerByKey($summonerKey)->image->full
+        ]);
+    }
+
+    /**
+     * @param int $summonerId
+     * @return string
+     * @throws \ReflectionException
+     */
+    public function summonerIconById(int $summonerId): string
+    {
+        return (string) Str::Replace("http://ddragon.leagueoflegends.com/cdn/:version/img/spell/:icon", [
+            'version'   => $this->version,
+            'icon'      => $this->getSummonerById($summonerId)->image->full
+        ]);
+    }
+
+
+    /**
+     * @return object
+     * @throws \ReflectionException
+     */
+    public function getItems(): object
+    {
+        if ($this->initialize()->has("items_".$this->options["language"])) return $this->initialize()->get("items_".$this->options["language"]);
+        $data = $this->get(Str::Replace("http://DDragon.leagueoflegends.com/cdn/:version/data/:language/item.json", [
+            'version'    => $this->version,
+            'language'  => $this->options["language"]
+        ]));
+        $this->initialize()->set("items_".$this->options["language"], json_decode(json_encode($data)), $this->options["cache"]["DDragon"]["items"]);
+        return (object) json_decode(json_encode($data));
+    }
+
+    /**
+     * @param int $id
+     * @return false|mixed|object
+     * @throws \ReflectionException
+     */
+    public function getItem(int $id)
+    {
+        if ($this->initialize()->has("items_".$this->options["language"])) {
+            foreach ($this->initialize()->get("items_".$this->options["language"])->data as $item => $data) {
+                if (strtolower($item) == $id) return $data;
+            }
+            return false;
+        }
+        else return $this->getItems();
+    }
+
+    /**
+     * @param int $id
+     * @return string
+     */
+    public function getItemIcon(int $id): string
+    {
+        return (string) Str::Replace("http://ddragon.leagueoflegends.com/cdn/:version/img/item/:id.png", [
+            'version'   => $this->version,
+            'id'        => $id
         ]);
     }
 }
