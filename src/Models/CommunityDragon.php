@@ -32,6 +32,7 @@ class CommunityDragon extends Model
      */
     protected array $endpoints = [
         "profile-icon" => "/profile-icon/:profileIconId",
+        "champion-data-key" => "https://raw.communitydragon.org/:version/plugins/rcp-be-lol-game-data/global/:language/v1/champions/:championId.json",
 
     ];
 
@@ -57,5 +58,14 @@ class CommunityDragon extends Model
             'version'       => $this->version,
             'profileIconId' => $profileIconId
         ]);
+    }
+
+    public function getChampionDataByKey(int $championId)
+    {
+        return json_decode(file_get_contents(Str::Replace($this->endpoints["champion-data-key"], [
+            'version'       => $this->version,
+            'language'      => "tr_tr",
+            'championId'    => $championId
+        ])));
     }
 }

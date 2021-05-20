@@ -89,11 +89,11 @@ class DDragon extends Model
      * @param int $championId
      * @return object|bool
      */
-    public function getChampionById(int $championId)
+    public function getChampionById(string $championId)
     {
         if ($this->initialize()->has("champions_".$this->options["language"])) {
             foreach ($this->initialize()->get("champions_".$this->options["language"])->data as $champion => $data) {
-                if ($data->key == $championId) return $data;
+                if (strtolower($data->id) == strtolower($championId)) return $data;
             }
             return false;
         }
@@ -106,16 +106,26 @@ class DDragon extends Model
      * @param string $championKey
      * @return false|mixed|object
      */
-    public function getChampionByKey(string $championKey)
+    public function getChampionByKey(int $championKey)
     {
         if ($this->initialize()->has("champions_".$this->options["language"])) {
             foreach ($this->initialize()->get("champions_".$this->options["language"])->data as $champion => $data) {
-                if (strtolower($data->id) == strtolower($championKey)) return $data;
+                if (strtolower($data->key) == strtolower($championKey)) return $data;
             }
             return false;
         }
         else return $this->getChampions();
     }
+
+
+    public function getChampionIcon($championKey): string
+    {
+        return (string) Str::Replace("http://ddragon.leagueoflegends.com/cdn/:version/img/champion/:champion", [
+            'version'   => $this->version,
+            'champion'  => $this->getChampionById($championKey)->image->full
+        ]);
+    }
+
 
     /**
      * @param int $iconId
@@ -123,7 +133,7 @@ class DDragon extends Model
      */
     public function profileIcon(int $iconId): string
     {
-        return (string) Str::Replace("http://ddragon.leagueoflegends.com/cdn/10.25.1/img/profileicon/:icon.png", [
+        return (string) Str::Replace("http://ddragon.leagueoflegends.com/cdn/:version/img/profileicon/:icon.png", [
             'version'   => $this->version,
             'language'  => $this->options["language"],
             'icon'      => $iconId

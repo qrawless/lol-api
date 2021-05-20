@@ -41,6 +41,10 @@ class Model
         // Matchlist
         "matchLists"                => "/lol/match/v4/matchlists/by-account/:accountId",
         "match"                     => "/lol/match/v4/matches/:matchId",
+        // Live
+        "live"                      => "/lol/spectator/v4/active-games/by-summoner/:id",
+        // Live
+        "championRotations"         => "/lol/platform/v3/champion-rotations",
     ];
 
     /**
@@ -89,7 +93,10 @@ class Model
         $curl = $this->curl;
 
         if (isset($options)) $url = sprintf("%s?%s", $url, http_build_query($options));
-        foreach ($options["queue"] as $key => $option) { $url = str_replace("%5B$key%5D","", $url); }
+
+        if (@$options["queue"]){
+            foreach ($options["queue"] as $key => $option) { $url = str_replace("%5B$key%5D","", $url); }
+        }
 
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
