@@ -59,7 +59,7 @@ class CommunityDragon extends Model
         ]);
     }
 
-    public function getChampionDataByKey(int $championId, $url = false)
+    public function getChampionDataByKey(int $championId, $url = null)
     {
         $url = Str::Replace($this->endpoints["champion-data-key"], [
             'version'       => $this->version,
