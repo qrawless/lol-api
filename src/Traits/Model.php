@@ -120,12 +120,14 @@ class Model
         if (empty($urls)) return false;
         $nodes = [];
         foreach ($urls as $url){
-            if (preg_match_all('/(\?)/', $url[0])){
-                $urll = sprintf("%s&%s", $url[0], http_build_query($url[1]));
-            } else {
-                $urll = sprintf("%s?%s", $url[0], http_build_query($url[1]));
+            if (is_array($url)){
+                if (preg_match_all('/(\?)/', $url[0])){
+                    $url = sprintf("%s&%s", $url[0], http_build_query($url[1]));
+                } else {
+                    $url = sprintf("%s?%s", $url[0], http_build_query($url[1]));
+                }
             }
-            array_push($nodes, $urll);
+            array_push($nodes, $url);
         }
 
 //        print_r($nodes);

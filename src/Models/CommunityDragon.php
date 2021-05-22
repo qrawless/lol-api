@@ -66,7 +66,7 @@ class CommunityDragon extends Model
             'language'      => "tr_tr",
             'championId'    => $championId
         ]);
-        if ($url) return $url;
+        if ($url === true) return $url;
         return json_decode(file_get_contents($url));
     }
 }
